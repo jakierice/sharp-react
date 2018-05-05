@@ -1,0 +1,25 @@
+{
+  "name": "@sharp-react/form-wizard",
+  "version": "0.1.0",
+  "description": "Easy to use and extensible React Form Wizard/Stepper component.",
+  "license": "MIT",
+  "author": {
+    "name": "Jakie W. Rice",
+    "email": "jakie.rice@gmail.com"
+  },
+  "main": "src/index.js",
+  "peerDependencies": {
+    "react": "^16.3.2",
+    "styled-components": "^3.2.6"
+  },
+  "devDependencies": {
+    "react": "^16.3.2",
+    "styled-components": "^3.2.6"
+  },
+  "scripts": {
+    "build": ""
+  },
+  "dependencies": {
+    "prop-types": "^15.6.1"
+  }
+}
