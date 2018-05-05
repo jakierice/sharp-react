@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { FormContextProvider } from './FormContext';
 import FormWizardHeader from './FormWizardHeader';
 import FormWizardBody from './FormWizardBody';
 import FormWizardFooter from './FormWizardFooter';
+import FormWizardReview from './FormWizardReview';
 
 const FormContainer = styled.div`
   border: 1px solid gray;
@@ -55,29 +57,41 @@ class FormWizard extends React.Component {
     }
   };
 
-  renderSteps = ({ handleChange, onSubmit }) =>
+  handleChange = (e) => {
+    const { name, value } = e.target;
+
+    this.setState({ [name]: value });
+  };
+
+  renderSteps = ({ onSubmit }) =>
     React.Children.map(this.props.children, (child, index) =>
       React.cloneElement(child, {
         active: index === this.state.activeStep,
-        onChange: handleChange,
+        onChange: e => this.handleChange(e),
         onSubmit,
       }));
 
   renderStepTitles() {
     return React.Children.map(this.props.children, child => <h5>{child.props.title}</h5>);
   }
+  renderReview = () => {
+    return this.props.showReview ? <FormWizardReview /> : null;
+  };
 
   render() {
     return (
-      <FormContainer>
-        <FormWizardHeader>{this.renderStepTitles()}</FormWizardHeader>
-        <FormWizardBody>{form => this.renderSteps(form)}</FormWizardBody>
-        <FormWizardFooter
-          disableButton={this.disableButton}
-          navigateNext={this.navigateNext}
-          navigatePrevious={this.navigatePrevious}
-        />
-      </FormContainer>
+      <FormContextProvider value={this.state}>
+        <FormContainer>
+          <FormWizardHeader>{this.renderStepTitles()}</FormWizardHeader>
+          <FormWizardBody>{form => this.renderSteps(form)}</FormWizardBody>
+          <FormWizardFooter
+            disableButton={this.disableButton}
+            navigateNext={this.navigateNext}
+            navigatePrevious={this.navigatePrevious}
+          />
+        </FormContainer>
+        {this.renderReview()}
+      </FormContextProvider>
     );
   }
 }

@@ -13,18 +13,19 @@ storiesOf('FormWizard', module).add('Basic', () => (
         <input name="occupation" />
       </Step>
       <Step title="Step Three">
-        <FormValues>
-          {values => (
-            <Fragment>
-              <h1>{values.name}</h1>
-              <ul>
-                <li>Age: {values.age}</li>
-                <li>Occupation: {values.occupation}</li>
-              </ul>
-            </Fragment>
-          )}
-        </FormValues>
+        <h3>Step Three</h3>
       </Step>
+      <FormValues>
+        {values => (
+          <Fragment>
+            <h1>{values.name}</h1>
+            <ul>
+              <li>Age: {values.age}</li>
+              <li>Occupation: {values.occupation}</li>
+            </ul>
+          </Fragment>
+        )}
+      </FormValues>
     </FormWizard>
   </div>
 ));
