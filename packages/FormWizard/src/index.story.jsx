@@ -1,31 +1,41 @@
 import React, { Fragment } from 'react';
 import { storiesOf } from '@storybook/react';
-import FormWizard, { Step, FormValues } from '.';
+import FormWizard from '.';
+
+const onSubmitMock = (e) => {
+  e.preventDefault();
+  console.log(e);
+};
 
 storiesOf('FormWizard', module).add('Basic', () => (
-  <div>
-    <FormWizard>
-      <Step title="Step One">
-        <input name="name" />
-      </Step>
-      <Step title="Step Two">
+  <FormWizard onSubmit={onSubmitMock}>
+    <FormWizard.Header>
+      <h1>Step One</h1>
+      <h1>Step Two</h1>
+      <h1>Step Three</h1>
+    </FormWizard.Header>
+    <FormWizard.Steps>
+      <FormWizard.Step>
+        <label htmlFor="name">Name</label>
+        <input name="name" id="name" />
+      </FormWizard.Step>
+      <FormWizard.Step>
         <input name="age" />
         <input name="occupation" />
-      </Step>
-      <Step title="Step Three">
+      </FormWizard.Step>
+      <FormWizard.Step>
         <h3>Step Three</h3>
-      </Step>
-      <FormValues>
-        {values => (
-          <Fragment>
-            <h1>{values.name}</h1>
-            <ul>
-              <li>Age: {values.age}</li>
-              <li>Occupation: {values.occupation}</li>
-            </ul>
-          </Fragment>
-        )}
-      </FormValues>
-    </FormWizard>
-  </div>
+      </FormWizard.Step>
+    </FormWizard.Steps>
+    <FormWizard.Footer />{' '}
+    <FormWizard.Review>
+      {values => (
+        <Fragment>
+          <h1>Name: {values.name}</h1>
+          <p>Age: {values.age}</p>
+          <p>Job: {values.occupation}</p>
+        </Fragment>
+      )}
+    </FormWizard.Review>
+  </FormWizard>
 ));

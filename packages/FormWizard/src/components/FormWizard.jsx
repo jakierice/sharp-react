@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { FormContextProvider } from './FormContext';
-import FormWizardHeader from './FormWizardHeader';
-import FormWizardBody from './FormWizardBody';
-import FormWizardFooter from './FormWizardFooter';
-import FormWizardReview from './FormWizardReview';
+import { FormWizardProvider } from './FormWizardContext';
+import Header from './Header';
+import Steps from './Steps';
+import Step from './Step';
+import Footer from './Footer';
+import Review from './Review';
 
-const FormContainer = styled.div`
-  border: 1px solid gray;
+const WizardLayout = styled.div`
   display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: 1fr 3fr 1fr;
-  max-width: 80rem;
+  grid-gap: 1.2rem;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: 1fr minmax(20rem, 50vh) 1fr;
   padding: 1.2rem;
 `;
 
@@ -23,10 +23,37 @@ class FormWizard extends React.Component {
 
   static propTypes = {
     children: PropTypes.arrayOf(PropTypes.node),
+    onSubmit: PropTypes.func.isRequired,
   };
+
+  static Header = Header;
+  static Steps = Steps;
+  static Step = Step;
+  static Footer = Footer;
+  static Review = Review;
 
   state = {
     activeStep: 0,
+  };
+
+  handleChange = (e) => {
+    const { name, value } = e.target;
+
+    this.setState({ [name]: value });
+  };
+
+  navigateNext = () => {
+    const stepCount = this.props.children.length;
+
+    if (this.state.activeStep < stepCount - 1) {
+      this.setState(prevState => ({ activeStep: prevState.activeStep + 1 }));
+    }
+  };
+
+  navigatePrevious = () => {
+    if (this.state.activeStep > 0) {
+      this.setState(prevState => ({ activeStep: prevState.activeStep - 1 }));
+    }
   };
 
   disableButton = (button) => {
@@ -43,55 +70,24 @@ class FormWizard extends React.Component {
     }
   };
 
-  navigatePrevious = () => {
-    if (this.state.activeStep > 0) {
-      this.setState(prevState => ({ activeStep: prevState.activeStep - 1 }));
-    }
-  };
-
-  navigateNext = () => {
-    const stepCount = this.props.children.length;
-
-    if (this.state.activeStep < stepCount - 1) {
-      this.setState(prevState => ({ activeStep: prevState.activeStep + 1 }));
-    }
-  };
-
-  handleChange = (e) => {
-    const { name, value } = e.target;
-
-    this.setState({ [name]: value });
-  };
-
-  renderSteps = ({ onSubmit }) =>
-    React.Children.map(this.props.children, (child, index) =>
-      React.cloneElement(child, {
-        active: index === this.state.activeStep,
-        onChange: e => this.handleChange(e),
-        onSubmit,
-      }));
-
-  renderStepTitles() {
-    return React.Children.map(this.props.children, child => <h5>{child.props.title}</h5>);
-  }
-  renderReview = () => {
-    return this.props.showReview ? <FormWizardReview /> : null;
-  };
-
   render() {
+    const wizard = {
+      actions: {
+        navigateNext: this.navigateNext,
+        navigatePrevious: this.navigatePrevious,
+        disableButton: this.disableButton,
+        handleChange: this.handleChange,
+        onSubmit: this.props.onSubmit,
+      },
+      values: this.state,
+      activeStep: this.state.activeStep,
+    };
     return (
-      <FormContextProvider value={this.state}>
-        <FormContainer>
-          <FormWizardHeader>{this.renderStepTitles()}</FormWizardHeader>
-          <FormWizardBody>{form => this.renderSteps(form)}</FormWizardBody>
-          <FormWizardFooter
-            disableButton={this.disableButton}
-            navigateNext={this.navigateNext}
-            navigatePrevious={this.navigatePrevious}
-          />
-        </FormContainer>
-        {this.renderReview()}
-      </FormContextProvider>
+      <WizardLayout>
+        <FormWizardProvider value={wizard}>
+          {this.props.children}
+        </FormWizardProvider>
+      </WizardLayout>
     );
   }
 }
