@@ -16,24 +16,36 @@ storiesOf('FormWizard', module).add('Basic', () => (
     </FormWizard.Header>
     <FormWizard.Steps>
       <FormWizard.Step>
-        <label htmlFor="name">Name</label>
-        <input name="name" id="name" />
+        <label htmlFor="name">
+          Name
+          <input name="name" id="name" />
+        </label>
       </FormWizard.Step>
       <FormWizard.Step>
-        <input name="age" />
-        <input name="occupation" />
+        <label htmlFor="age">
+          Age
+          <input name="age" />
+        </label>
+        <label htmlFor="occupation">
+          Occupation
+          <input id="occupation" name="occupation" />
+        </label>
       </FormWizard.Step>
       <FormWizard.Step>
-        <h3>Step Three</h3>
+        <label htmlFor="marital-status">
+          Married?
+          <input type="checkbox" name="maritalStatus" />
+        </label>
       </FormWizard.Step>
     </FormWizard.Steps>
-    <FormWizard.Footer />{' '}
+    <FormWizard.Footer />
     <FormWizard.Review>
       {values => (
         <Fragment>
           <h1>Name: {values.name}</h1>
           <p>Age: {values.age}</p>
           <p>Job: {values.occupation}</p>
+          <p>Marital Status: {values.maritalStatus ? 'Married' : 'Single'}</p>
         </Fragment>
       )}
     </FormWizard.Review>

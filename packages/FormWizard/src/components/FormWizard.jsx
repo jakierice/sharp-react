@@ -17,37 +17,50 @@ const WizardLayout = styled.div`
 `;
 
 class FormWizard extends React.Component {
-  static defaultProps = {
-    children: null,
-  };
-
-  static propTypes = {
-    children: PropTypes.arrayOf(PropTypes.node),
-    onSubmit: PropTypes.func.isRequired,
-  };
-
   static Header = Header;
   static Steps = Steps;
   static Step = Step;
   static Footer = Footer;
   static Review = Review;
 
+  static propTypes = {
+    children: PropTypes.arrayOf(PropTypes.node),
+    onSubmit: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    children: null,
+  };
+
   state = {
     activeStep: 0,
   };
 
   handleChange = (e) => {
-    const { name, value } = e.target;
+    const {
+      name, value, type, checked,
+    } = e.target;
 
-    this.setState({ [name]: value });
+    this.setState(() => {
+      if (type === 'checkbox') {
+        return { [name]: checked };
+      }
+
+      return { [name]: value };
+    });
   };
 
   navigateNext = () => {
-    const stepCount = this.props.children.length;
-
-    if (this.state.activeStep < stepCount - 1) {
-      this.setState(prevState => ({ activeStep: prevState.activeStep + 1 }));
-    }
+    React.Children.forEach(this.props.children, (child) => {
+      if (child.type.name === 'Steps') {
+        const stepCount = React.Children.count(child.props.children);
+        this.setState((prevState) => {
+          if (prevState.activeStep <= stepCount - 1) {
+            return { activeStep: prevState.activeStep + 1 };
+          }
+        });
+      }
+    });
   };
 
   navigatePrevious = () => {
@@ -84,9 +97,7 @@ class FormWizard extends React.Component {
     };
     return (
       <WizardLayout>
-        <FormWizardProvider value={wizard}>
-          {this.props.children}
-        </FormWizardProvider>
+        <FormWizardProvider value={wizard}>{this.props.children}</FormWizardProvider>
       </WizardLayout>
     );
   }
