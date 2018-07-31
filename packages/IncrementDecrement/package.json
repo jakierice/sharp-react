@@ -1,0 +1,9 @@
+{
+  "name": "@sharp-react/increment-decrement",
+  "version": "0.1.0",
+  "description": "Function as child with current value and increment/decrement functions returned",
+  "main": "src/index.js",
+  "author": "Jakie W. Rice",
+  "license": "MIT",
+  "private": false
+}
