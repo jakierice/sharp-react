@@ -23,7 +23,7 @@ const Steps = props => (
             React.cloneElement(child, {
               active: index === activeStep,
               onChange: e => actions.handleChange(e),
-              onSubmit: actions.onSubmit,
+              // onSubmit: actions.onSubmit,
             }),
         )}
       </StepsContainer>

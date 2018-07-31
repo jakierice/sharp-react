@@ -36,6 +36,14 @@ class FormWizard extends React.Component {
     activeStep: 0,
   };
 
+  componentDidMount() {
+    React.Children.forEach(this.props.children, (child) => {
+      if (child.type.name === 'Steps') {
+        this.stepCount = React.Children.count(child.props.children);
+      }
+    });
+  }
+
   handleChange = (e) => {
     const {
       name, value, type, checked,
@@ -51,15 +59,11 @@ class FormWizard extends React.Component {
   };
 
   navigateNext = () => {
-    React.Children.forEach(this.props.children, (child) => {
-      if (child.type.name === 'Steps') {
-        const stepCount = React.Children.count(child.props.children);
-        this.setState((prevState) => {
-          if (prevState.activeStep <= stepCount - 1) {
-            return { activeStep: prevState.activeStep + 1 };
-          }
-        });
+    this.setState((prevState) => {
+      if (prevState.activeStep < this.stepCount - 1) {
+        return { activeStep: prevState.activeStep + 1 };
       }
+      return null;
     });
   };
 
@@ -71,13 +75,12 @@ class FormWizard extends React.Component {
 
   disableButton = (button) => {
     const { activeStep } = this.state;
-    const stepCount = this.props.children.length;
 
     switch (button) {
       case 'previous':
         return activeStep === 0;
       case 'next':
-        return activeStep === stepCount - 1;
+        return activeStep === this.stepCount - 1;
       default:
         return false;
     }
